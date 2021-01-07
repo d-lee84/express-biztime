@@ -27,14 +27,25 @@ router.get(
 
 /** GET /companies/[code]: Gets one specific company
  *  - If company does not exist, throw 404 error (middleware)
- *  - Returns {company: {code, name, description}}
+ *  - Returns {company: {code, name, description, invoices: [id, ...]}}
  */
 
 router.get(
   "/:code", 
   middleware.doesCompanyExist, 
   async function (req, res, next) {
-    return res.json({companies: req.foundComp }); 
+    let company = req.foundComp;
+
+    const iResults = await db.query(
+      ` SELECT id
+          FROM invoices
+          WHERE comp_code = $1`,
+      [req.params.code]
+    );
+
+    company.invoices = iResults.rows.map(i => i.id);
+
+    return res.json({company}); 
   }
 );
 

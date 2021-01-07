@@ -4,7 +4,6 @@ const express = require("express");
 
 const db = require("../db");
 const router = new express.Router();
-// const middleware = require("../middleware");
 
 const { BadRequestError, NotFoundError } = require('../expressError');
 const HTTP_STATUS_OK = 200;
@@ -28,7 +27,8 @@ router.get(
 
 /** GET /invoices/[id]: get a list of all the invoices
  *  - If invoice does not exist, throw 404 error
- *  - Returns {invoice: {id, amt, paid, add_date, paid_date, company: {code, name, description}}
+ *  - Returns {invoice: {id, amt, paid, add_date, paid_date, 
+ *             company: {code, name, description}}
 */
 
 router.get(
@@ -81,6 +81,54 @@ router.post(
 
     const invoice = result.rows[0];
     return res.status(HTTP_STATUS_CREATED).json({ invoice });
+  }
+);
+
+
+/** PUT /invoices/[id] Updates an invoice
+ *  - If invoice not found, throw a 404 error 
+ *  - Returns {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
+ */
+
+router.put(
+  "/:id", 
+  async function (req, res, next) {
+    const { amt } = req.body;
+
+    let result = await db.query(
+      `UPDATE invoices
+        SET amt=$1
+        WHERE id=$2
+        RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+      [amt, req.params.id],
+    );
+    
+    let invoice = result.rows[0];
+
+    if (!invoice) throw new NotFoundError("Invoice doesn't exist!");
+    
+    return res.status(HTTP_STATUS_OK).json({ invoice });
+  }
+);
+
+/** DELETE /invoices/[id] Deletes an invoice
+ *  - If invoice not found, throw a 404 error 
+ *  - Returns {status: "deleted"}
+ */
+
+router.delete(
+  "/:id", 
+  async function (req, res, next) {
+
+    let results = await db.query(
+      `DELETE FROM invoices WHERE id = $1
+      RETURNING id`,
+      [req.params.id],
+    );
+
+    if (!results.rows[0]) throw new NotFoundError("Invoice doesn't exist!");
+
+    return res.json({ status: "deleted" });
   }
 );
 
