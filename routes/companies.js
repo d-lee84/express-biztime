@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require("express");
 
 const db = require("../db");
@@ -5,8 +7,8 @@ const router = new express.Router();
 const middleware = require("../middleware");
 
 const { BadRequestError } = require('../expressError');
-const HTTP_UPDATED = 200;
-const HTTP_CREATED = 201;
+const HTTP_STATUS_OK = 200;
+const HTTP_STATUS_CREATED = 201;
 
 /** GET /companies: get a list of all the companies 
  *  - Returns {companies: [{code, name}, ...]}
@@ -32,14 +34,7 @@ router.get(
   "/:code", 
   middleware.doesCompanyExist, 
   async function (req, res, next) {
-  
-    let result = await db.query(
-      `SELECT code, name, description
-        FROM companies
-        WHERE code= $1;`, [req.params.code]);
-
-
-    return res.json({companies: result.rows[0]}); 
+    return res.json({companies: req.foundComp }); 
   }
 );
 
@@ -66,7 +61,7 @@ router.post(
     }
 
     const company = result.rows[0];
-    return res.status(HTTP_CREATED).json({ company });
+    return res.status(HTTP_STATUS_CREATED).json({ company });
   }
 );
 
@@ -94,7 +89,8 @@ router.put(
           RETURNING code, name, description`,
       [name, description, req.params.code],
     );
-    } catch {
+    } catch (err) {
+      // Examine the error to give the appropriate error
       throw new BadRequestError("Company name already exists.");
     }
     

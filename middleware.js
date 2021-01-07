@@ -17,6 +17,8 @@ async function doesCompanyExist(req, res, next){
   if (result.rows.length === 0) {
     throw new NotFoundError("Company not found");
   }
+  req.foundComp = result.rows[0];
+  
   return next();
 }
 
