@@ -95,7 +95,7 @@ router.put(
     }
     
     const company = result.rows[0];
-    return res.status(HTTP_UPDATED).json({ company });
+    return res.status(HTTP_STATUS_OK).json({ company });
   }
 );
 
