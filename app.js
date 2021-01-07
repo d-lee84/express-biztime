@@ -5,8 +5,12 @@ const { NotFoundError } = require("./expressError");
 
 const app = express();
 
+/** Parses JSON request into req.body */
 app.use(express.json());
 
+/** Routes handlers for '/companies' */
+const companiesRoutes = require("./routes/companies");
+app.use("/companies", companiesRoutes);
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
 app.use(function (req, res, next) {
