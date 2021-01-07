@@ -3,6 +3,11 @@
 const db = require("./db");
 const { NotFoundError } = require('./expressError');
 
+
+/** Checks the database to see if there is a company with a given code
+ *  - If the company does not exist, throw 404 error
+ */
+
 async function doesCompanyExist(req, res, next){
   let result = await db.query(
     `SELECT code, name, description
