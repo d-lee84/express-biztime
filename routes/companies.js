@@ -4,17 +4,14 @@ const db = require("../db");
 const router = new express.Router();
 const middleware = require("../middleware");
 
-const { NotFoundError, 
-        BadRequestError } = require('../expressError');
+const { BadRequestError } = require('../expressError');
 const HTTP_UPDATED = 200;
 const HTTP_CREATED = 201;
-
-
-
 
 /** GET /companies: get a list of all the companies 
  *  - Returns {companies: [{code, name}, ...]}
 */
+
 router.get(
   "/", 
   async function (req, res, next) {
@@ -29,6 +26,7 @@ router.get(
 /** GET /companies/[code]: Gets one specific company
  *  - Returns {company: {code, name, description}}
  */
+
 router.get(
   "/:code", 
   middleware.doesCompanyExist, 
@@ -104,11 +102,11 @@ router.put(
   }
 );
 
-
 /** DELETE /companies/[code] Deletes a company
  * if company not found, throw a 404 error
  *  - Returns {status: "deleted"}
  */
+
 router.delete(
   "/:code", 
   middleware.doesCompanyExist,
