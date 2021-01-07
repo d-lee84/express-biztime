@@ -21,7 +21,10 @@ router.get(
       `SELECT id, comp_code 
         FROM invoices;`
     );
-    return res.json({invoices: result.rows});
+    
+    let invoices = result.rows;
+
+    return res.json({ invoices });
   }
 );
 
@@ -34,11 +37,13 @@ router.get(
 router.get(
   "/:id", 
   async function (req, res, next) {
+    const { id } = req.params;
+
     const iResults = await db.query(
       ` SELECT id, amt, paid, add_date, paid_date, comp_code
           FROM invoices
           WHERE id = $1`,
-        [req.params.id]
+        [id] 
     )
     const invoice = iResults.rows[0];
     
@@ -94,13 +99,14 @@ router.put(
   "/:id", 
   async function (req, res, next) {
     const { amt } = req.body;
+    const { id } = req.params;
 
     let result = await db.query(
       `UPDATE invoices
         SET amt=$1
         WHERE id=$2
         RETURNING id, comp_code, amt, paid, add_date, paid_date`,
-      [amt, req.params.id],
+      [amt, id],
     );
     
     let invoice = result.rows[0];
@@ -119,11 +125,12 @@ router.put(
 router.delete(
   "/:id", 
   async function (req, res, next) {
+    const { id } = req.params;
 
     let results = await db.query(
       `DELETE FROM invoices WHERE id = $1
       RETURNING id`,
-      [req.params.id],
+      [id],
     );
 
     if (!results.rows[0]) throw new NotFoundError("Invoice doesn't exist!");
