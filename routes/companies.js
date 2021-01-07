@@ -24,6 +24,7 @@ router.get(
 );
 
 /** GET /companies/[code]: Gets one specific company
+ *  - If company does not exist, throw 404 error (middleware)
  *  - Returns {company: {code, name, description}}
  */
 
@@ -43,7 +44,7 @@ router.get(
 );
 
 /** POST /companies Creates one a company
- * if company name or code is not unqiue, throw a 400 error
+ *  - If company name or code is not unqiue, throw a 400 error (middleware)
  *  - Returns {company: {code, name, description}}
  */
 
@@ -70,8 +71,8 @@ router.post(
 );
 
 /** PUT /companies/[code] Updates a company
- * if company not found, throw a 404 error
- * if company name or code is not unqiue, throw a 400 error
+ *  - If company not found, throw a 404 error (middleware)
+ *  - If company name or code is not unqiue, throw a 400 error
  *  - Returns {company: {code, name, description}}
  */
 
@@ -103,7 +104,7 @@ router.put(
 );
 
 /** DELETE /companies/[code] Deletes a company
- * if company not found, throw a 404 error
+ *  - If company not found, throw a 404 error (middleware)
  *  - Returns {status: "deleted"}
  */
 
