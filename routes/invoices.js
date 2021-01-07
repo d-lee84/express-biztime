@@ -85,7 +85,7 @@ router.post(
 );
 
 
-/** PUT /invoices/[id] Updates an invoice
+/** PUT /invoices/[id]: Updates an invoice
  *  - If invoice not found, throw a 404 error 
  *  - Returns {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
  */
@@ -111,9 +111,9 @@ router.put(
   }
 );
 
-/** DELETE /invoices/[id] Deletes an invoice
+/** DELETE /invoices/[id]: Deletes an invoice
  *  - If invoice not found, throw a 404 error 
- *  - Returns {status: "deleted"}
+ *  - Returns {status: "deleted"} if successful
  */
 
 router.delete(
