@@ -2,11 +2,14 @@ const request = require("supertest");
 const app = require("../app");
 const db = require("../db");
 
+//import global status code
+
 let testCompany, testCompany2, testInvoice, testInvoice2;
 
 beforeEach(async function () {
-  await db.query("DELETE FROM companies");
+  //always delete the many first
   await db.query("DELETE FROM invoices");
+  await db.query("DELETE FROM companies");
 
   let results = await db.query(`
     INSERT INTO companies (code, name, description)
@@ -55,7 +58,7 @@ describe("GET /invoices", function(){
 describe("GET /invoices/[id]", function(){
   test("Gets a specific invoice", async function () {
     const resp = await request(app).get(`/invoices/${testInvoice.id}`);
-
+    //update amount and paid
     expect(resp.body).toEqual({
       invoice : {
         id: testInvoice.id,
@@ -85,7 +88,7 @@ describe("POST /invoices", function(){
     const resp = await request(app)
       .post(`/invoices`)
       .send(newInv);
-    
+    //update amount and paid
     expect(resp.body).toEqual({
       invoice : {
         id: expect.any(Number),
@@ -120,6 +123,7 @@ describe("PUT /invoices/[id]", function(){
     const resp = await request(app)
       .put(`/invoices/${testInvoice.id}`)
       .send(editedInv);
+    //update amount and paid
     
     expect(resp.body).toEqual({
       invoice : {

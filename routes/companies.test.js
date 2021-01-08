@@ -4,7 +4,7 @@ const db = require("../db");
 
 let testCompany;
 let testCompany2;
-
+//consider using testCompanyName instead of actual companies
 beforeEach(async function () {
   await db.query("DELETE FROM companies");
 
@@ -72,6 +72,7 @@ describe("POST /companies", function(){
       company : newComp,
     });
   });
+
 
   test("Responds 400 if company name is taken.", async function(){
     const resp = await request(app)
