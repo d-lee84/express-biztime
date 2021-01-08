@@ -63,7 +63,7 @@ router.get(
 );
 
 /** POST /invoices: Creates an invoice
- *  - If comp_code doesn't exist, throw a 401
+ *  - If comp_code doesn't exist, throw a 400
  *  - Returns {invoice: {id, comp_code, amt, paid, add_date, paid_date}}
 */
 
