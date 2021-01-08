@@ -111,62 +111,49 @@ describe("POST /invoices", function(){
 });
 
 
-// describe("PUT /companies/[code]", function(){
-//   test("Edit an existing company successfully", async function () {
-//     let editedComp = {
-//       name: "new company",
-//       description: "this is the new company"
-//     };
+describe("PUT /invoices/[id]", function(){
+  test("Edit an existing invoice's amount", async function () {
+    let editedInv = {
+      amt: 100.65,
+    };
 
-//     const resp = await request(app)
-//       .put(`/companies/${testCompany.code}`)
-//       .send(editedComp);
+    const resp = await request(app)
+      .put(`/invoices/${testInvoice.id}`)
+      .send(editedInv);
     
-//     expect(resp.body).toEqual({
-//       company : {
-//         code: testCompany.code,
-//         name: editedComp.name,
-//         description: editedComp.description
-//       },
-//     });
-//   });
+    expect(resp.body).toEqual({
+      invoice : {
+        id: testInvoice.id,
+        comp_code: testInvoice.comp_code,
+        amt: `${editedInv.amt}`,
+        paid: expect.any(Boolean),
+        add_date: expect.any(String),
+        paid_date: null
+      },
+    });
+  });
 
-//   test("Responds 400 if company name is taken.", async function(){
-//     const resp = await request(app)
-//       .put(`/companies/${testCompany.code}`)
-//       .send({
-//         name: testCompany2.name,
-//         description: "new"
-//       });
-    
-//     expect(resp.status).toEqual(400);
-//   });
+  test("Responds 404 if invoice id does not exist.", async function(){
+    const resp = await request(app)
+      .put(`/invoices/0`)
+     
+    expect(resp.status).toEqual(404);
+  });
+});
 
-//   test("Responds 404 if company code does not exist.", async function(){
-//     const resp = await request(app)
-//       .post(`/companies/notReal`)
-//       .send({
-//         name: "new",
-//         description: "new"
-//       });
+describe("DELETE /invoices/[id]", function(){
+  test("Delete an existing invoice successfully", async function () {
+    const resp = await request(app).delete(`/invoices/${testInvoice.id}`);
     
-//     expect(resp.status).toEqual(404);
-//   });
-// });
+    expect(resp.body).toEqual({ status: "deleted" });
+  });
 
-// describe("DELETE /companies/[code]", function(){
-//   test("Delete an existing company successfully", async function () {
-//     const resp = await request(app).delete(`/companies/${testCompany.code}`);
+  test("Responds 404 if invoice id does not exist.", async function(){
+    const resp = await request(app).delete(`/invoices/0`);
     
-//     expect(resp.body).toEqual({ status: "deleted" });
-//   });
-
-//   test("Responds 404 if company code does not exist.", async function(){
-//     const resp = await request(app).delete(`/companies/noCompany`);
-    
-//     expect(resp.status).toEqual(404);
-//   });
-// });
+    expect(resp.status).toEqual(404);
+  });
+});
 
 
 afterAll(async function () {

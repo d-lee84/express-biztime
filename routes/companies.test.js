@@ -132,7 +132,7 @@ describe("PUT /companies/[code]", function(){
 
   test("Responds 404 if company code does not exist.", async function(){
     const resp = await request(app)
-      .post(`/companies/notReal`)
+      .put(`/companies/notReal`)
       .send({
         name: "new",
         description: "new"
